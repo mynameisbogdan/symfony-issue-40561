@@ -12,6 +12,7 @@
 namespace App\Form;
 
 use App\Entity\Post;
+use App\Form\Type\CountryCodeChoiceType;
 use App\Form\Type\DateTimePickerType;
 use App\Form\Type\TagsInputType;
 use Symfony\Component\Form\AbstractType;
@@ -73,6 +74,10 @@ class PostType extends AbstractType
             ])
             ->add('tags', TagsInputType::class, [
                 'label' => 'label.tags',
+                'required' => false,
+            ])
+            ->add('countryCode', CountryCodeChoiceType::class, [
+                'label' => 'label.country',
                 'required' => false,
             ])
             // form events let you modify information or fields at different steps

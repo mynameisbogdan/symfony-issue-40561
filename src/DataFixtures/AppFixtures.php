@@ -12,6 +12,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Comment;
+use App\Entity\Country;
 use App\Entity\Post;
 use App\Entity\Tag;
 use App\Entity\User;
@@ -36,6 +37,7 @@ class AppFixtures extends Fixture
     {
         $this->loadUsers($manager);
         $this->loadTags($manager);
+        $this->loadCountries($manager);
         $this->loadPosts($manager);
     }
 
@@ -69,9 +71,21 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 
+    private function loadCountries(ObjectManager $manager): void
+    {
+        foreach ($this->getCountryData() as $code) {
+            $country = new Country();
+            $country->setCode($code);
+
+            $manager->persist($country);
+        }
+
+        $manager->flush();
+    }
+
     private function loadPosts(ObjectManager $manager): void
     {
-        foreach ($this->getPostData() as [$title, $slug, $summary, $content, $publishedAt, $author, $tags]) {
+        foreach ($this->getPostData() as [$title, $slug, $summary, $content, $publishedAt, $author, $tags, $countryCode]) {
             $post = new Post();
             $post->setTitle($title);
             $post->setSlug($slug);
@@ -80,6 +94,7 @@ class AppFixtures extends Fixture
             $post->setPublishedAt($publishedAt);
             $post->setAuthor($author);
             $post->addTag(...$tags);
+            $post->setCountryCode($countryCode);
 
             foreach (range(1, 5) as $i) {
                 $comment = new Comment();
@@ -121,6 +136,17 @@ class AppFixtures extends Fixture
         ];
     }
 
+    private function getCountryData(): array
+    {
+        return [
+            'FR',
+            'DE',
+            'RO',
+            'IT',
+            'ES',
+        ];
+    }
+
     private function getPostData()
     {
         $posts = [];
@@ -135,6 +161,7 @@ class AppFixtures extends Fixture
                 // Ensure that the first post is written by Jane Doe to simplify tests
                 $this->getReference(['jane_admin', 'tom_admin'][0 === $i ? 0 : random_int(0, 1)]),
                 $this->getRandomTags(),
+                'DE',
             ];
         }
 

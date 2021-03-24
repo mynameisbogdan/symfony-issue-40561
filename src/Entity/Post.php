@@ -115,6 +115,14 @@ class Post
      */
     private $tags;
 
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(type="string", length=2, nullable=true)
+     * @Assert\Country()
+     */
+    private $countryCode;
+
     public function __construct()
     {
         $this->publishedAt = new \DateTime();
@@ -222,5 +230,15 @@ class Post
     public function getTags(): Collection
     {
         return $this->tags;
+    }
+
+    public function getCountryCode(): ?string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(?string $countryCode): void
+    {
+        $this->countryCode = $countryCode;
     }
 }
